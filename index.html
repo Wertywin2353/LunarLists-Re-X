@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- https://icons8.com/icons/all--style-material-rounded -->
+    <link rel="stylesheet" href="api/style.css">
+    <link rel="icon" href="./res/ui/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Lists Re:X</title>
+</head>
+<body>
+    <header id="header">
+        <img src="res/ui/logo.png" id="Headerlogo">
+    </header>
+    <!-- Separator for header (yea spamming br's & invisible hr) -->
+    <br><br><br><hr style="opacity: 0;"><hr style="opacity: 0;"><hr style="opacity: 0;"><hr style="opacity: 0;"><hr style="opacity: 0;"><hr style="opacity: 0;">
+    <!-- -->
+    <div id='linkmodetip'><img src='./res/ui/link.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Чтобы удобно переходить по ссылкам, нажмите Ctrl.</span></div>
+    <div id='importTip'><img src='./res/ui/list.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Автоимпорт коллекции...</span></div>
+    <div id="content">
+        <div id="addlist">
+            <input id="fileinput" type="file" style="border: 1px red solid;">
+            <br>
+            <img src="res/ui/load.png" style="width: 100px;">
+            <hr style="opacity: 0%;"><hr style="opacity: 0%;"><hr style="opacity: 0%;"><hr style="opacity: 0%;">
+            <h2 style="font-weight: lighter;">Загрузить лист</h2>
+            <p style="font-weight: lighter; opacity: 70%;">Нажмите, что-бы выбрать файл ".coll", ".js" или ".json" из вашего ПК.</p>
+            <div id="confbutton" onclick="convertCollection()">
+                <img src="res/ui/convo.png" width="50px">
+                <br>
+                <span>Обновить лист</span>
+            </div>
+            <div id="createbutton" onclick="openNL()">
+                <img src="res/ui/create.png" width="50px">
+                <br>
+                <span>Новый лист</span>
+            </div>
+            <div id="infobutton" onclick="openAbout()">
+                <img src="res/ui/about.png" width="50px">
+                <br>
+                <span>О проекте</span>
+            </div>
+        </div>
+    </div>
+    <div id="gallerySplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
+        <h2 style="margin-left: 5px; margin-bottom: 5px; color: aliceblue;">Галерея баннеров</h2>
+        <div id="gallerycontent">
+            <div id="gallerytiles"></div>
+            <br>
+            <div>
+            <button class="impbtn"><img src='./res/ui/create.png' class='icon' style="filter: invert(); top: 1px;"><span class="newbnrbtntext">Добавить баннер аниме...</span></button>
+            <button class="clsbtn" onclick="closeGallery()">Закрыть гарелею</button>
+            <input id="imageinput" type="file">
+            </div>
+            <br>
+        </div>
+        </div>
+    </div>
+    <div id="aboutSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
+        <div id="aboutcontainer" style="width: 550px; height: 300px;">
+        <div id="aboutcontent" style="overflow: hidden;">
+            <img src="./res/ui/logo.png" width="500px"><hr style="border: 2px solid var(--style-col); margin-top: 5px;"><br>
+            <p style="text-align: left;">
+                <img src='./res/ui/vers.png' style="filter:invert();" class='icon'>
+                <b>Версия ПО:</b><span> 1.0Rel</span>
+                <br>
+                <img src='./res/ui/dev.png' style="filter:invert();" class='icon'>
+                <b>Разработчик:</b><span> Wertywin2353,</span>
+                <br>
+                <span style="opacity: 0;">-__-</span><img src='./res/ui/tglink.png' style="filter:invert();" class='icon'>
+                <b>TG:</b><a style="color: var(--style-col)" href="http://t.me/Wertywin2353"> t.me/Wertywin2353</a>
+                <br>
+                <span style="opacity: 0;">-__-</span><img src='./res/ui/gh.png' style="filter:invert();" class='icon'>
+                <b>GitHub:</b><a style="color: var(--style-col)" href="http://github.com/Wertywin2353"> github.com/Wertywin2353</a>
+                <br>
+                <img src='./res/ui/link.png' style="filter:invert();" class='icon'>
+                <b>Ссылка на проект:</b><a style="color: var(--style-col)" href="https://github.com/Wertywin2353/LunarLists"> GitHub</a>
+                <br>
+                <img src='./res/ui/icons8LOGO.png' style="filter:invert();" class='icon'>
+                <b>Источник иконок:</b><a style="color: var(--style-col)" href="http://icons8.com/"> Icons8</a>
+                <br>
+                <button class="closeAboutButton" onclick="closeAbout()">Понятно</button>
+            </p>
+        </div>
+        </div>
+        </div>
+    </div>
+    <div id="listSettSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
+            <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
+            <h2 style="margin-left: 5px; margin-bottom: 5px; color: aliceblue;">Настройка этой коллекции</h2>
+            <div id="listSettContainer" style="text-align: left;"></div>
+        </div>
+        </div>
+    </div>
+    <div id="NewListSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
+            <h2 style="margin-left: 5px; margin-bottom: 5px; color: aliceblue;">Создать новую коллекцию</h2>
+            <div id="newlistContainer" style="text-align: left;">
+                <span style="font-size: 17px;"><img src='./res/ui/list.png' style="filter: invert(); translate: -1px -1px;" class='icon'>Название коллекции: </span><input id="nlname" placeholder="My list"><br>
+                <br>
+                <span style="font-size: 17px;"><img src='./res/ui/favorite.png' style="filter: invert(); translate: -1px -1px;" class='icon'>Автор коллекции: </span><input id="nlauthor" placeholder="Me">
+                <br><br><br><br>
+                <button class="closeAboutButton" onclick="createList()">Создать коллекцию</button>
+            </div>
+        </div>
+    </div>
+    <a href=# id="dwn" style="display: none;">записать</a>
+    <a href=# id="debugdwn" style="display: none;">записать (debug)</a>
+    <bgobj id="bg"></bgobj>
+    <script src="api/CONFIG.js"></script>
+    <script src="api/pagedsn.js"></script>
+    <script src="api/core.js"></script>
+    <script src="api/LazyLib-L.js"></script>
+    <script src="res/structure-example.js"></script>
+</body>
+</html>

@@ -1,0 +1,498 @@
+* {
+    padding: 0;
+    margin: 0;
+    /*
+    border: 1px red solid;
+    */
+}
+:root {
+    --transparentcy-of-tip: 0%;
+    --translate-tip: "0px 10px";
+    --style-col: blueviolet;
+}
+
+::selection {
+    background-color: var(--style-col);
+}
+a::selection {
+    background-color: aliceblue;
+}
+html::-webkit-scrollbar {
+display: none;
+}
+body {
+    font-family: 'Segoe UI';
+}
+bgobj {
+    filter: brightness(0);
+    transition: 1s;
+    background-size: 100vw 100vh;
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -9999;
+}
+header {
+    transition: 0.5s;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    padding: 10px;
+    border-radius: 0 0 360px 360px;
+    position: fixed;
+    right: 0px;
+    left: 0px;
+    z-index: 100;
+}
+#addlist {
+    animation: addlistAN 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    width: 350px;
+    transition: 0.5s;
+}
+#fileinput {
+    position: absolute;
+    top: -10px;
+    left: -25px;
+    width: 425px;
+    height: 255px;
+    background: transparent;
+    opacity: 0;
+    z-index: 999;
+}
+
+#addlist:hover {
+    scale: 1.01;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+.contentPiece {
+    animation: pieceappear 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    padding: 10px;
+    border-radius: 15px;
+    width: 80%;
+    margin-left: 10px;
+    transition: 0.3s;
+}
+.contentPiece:hover {
+    --transparentcy-of-tip: 100%;
+    --translate-tip: "0px 0px";
+}
+.editTip {
+    position: absolute;
+    top: 30px;
+    right: 7px;
+    transition: 0.2s;
+    opacity: var(--transparentcy-of-tip);
+    translate: var(--translate-tip);
+}
+
+a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+a:visited {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+@keyframes addlistAN {
+    0% { translate: -50% 50px; opacity: 0; }
+    100% { top: 50%; left: 50%; translate: -50% -50%; opacity: 100; }
+}
+#confbutton {
+    transition: 0.5s;
+    left: 0;
+    position: absolute;
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 10px;
+}
+#createbutton {
+    transition: 0.5s;
+    left: 140px;
+    position: absolute;
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 10px;
+}
+#infobutton {
+    width: 102px;
+    transition: 0.5s;
+    right: 0px;
+    position: absolute;
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 10px;
+}
+#confbutton:hover {
+    scale: 0.96;
+    border-radius: 5px;
+}
+#createbutton:hover {
+    scale: 0.96;
+    border-radius: 5px;
+}
+#infobutton:hover {
+    scale: 0.96;
+    border-radius: 5px;
+}
+
+#Headerlogo {
+    transition: 1s;
+    width: 25%;
+}
+
+@keyframes hidelogo {
+    0% { opacity: 100; }
+    100% { opacity: 0; }
+}
+@keyframes pieceappear {
+    0% { opacity: 0%; translate: 0px 100px; border-radius: 5px; }
+    100% { opacity: 100%; translate: 0px 0px; border-radius: 15px; }
+}
+@keyframes listappear {
+    0% { opacity: 0%; translate: 0px -50px; border-radius: 5px; }
+    100% { opacity: 100%; translate: 0px 0px; border-radius: 15px; }
+}
+@keyframes editorappear {
+    0% { opacity: 0%; translate: 150px 0px; border-radius: 0px; }
+    100% { opacity: 100%; translate: 0px 0px; border-radius: 15px; }
+}
+@keyframes bannerAppear {
+    0% { opacity: 0; scale: 0.7; }
+    100% { opacity: 100; scale: 1; }
+}
+.countmark {
+    position: absolute;
+    right: 12px;
+    top: 7px;
+}
+#pieceEditor {
+    position: fixed;
+    right: 0px;
+    top: 96px;
+    bottom: 0px;
+    width: 17%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    border-radius: 15px 0px 0px 0px;
+    text-align: center;
+    animation: editorappear 1s cubic-bezier(.69,0,.67,0);
+}
+#placeolderEditor {
+    margin-top: 50%;
+}
+#headerSettings {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+.headerButton {
+    transition: 0.5s;
+    float: right;
+    margin-left: 5px;
+}
+.headerButton:hover {
+    filter: invert();
+    translate: 0px 5px;
+}
+
+input {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    border: 0px;
+    border-radius: 7px 0 0 7px;
+    padding: 3px;
+    float: right;
+    margin-top: 3px;
+    outline-color: var(--style-col);
+    width: 50%;
+}
+.icon {
+    width: 20px;
+    position: relative;
+    top: 5px;
+}
+.editortile {
+    margin-bottom: 1px;
+}
+
+#NAMETILE, #COMTILE {
+    background: rgba(255, 255, 255, 0.0);
+    float: none;
+    width: 100%;
+    font-size: 15px;
+    resize: none;
+    outline-color: var(--style-col);
+    overflow: hidden;
+    border: 0;
+    text-align: center;
+}
+#COMTILE {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    text-align: left;
+    padding: 5px;
+    width: 97%;
+}
+#gallerySplash, #aboutSplash, #listSettSplash, #NewListSplash {
+    opacity: 0;
+    transition: 0.5s;
+    display: none;
+    color: aliceblue;
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+}
+#gallerycontent, #aboutcontainer, #listSettContainer, #newlistContainer {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 1000px;
+    border-radius: 15px;
+    padding: 15px;
+}
+#gallerytiles, #aboutcontent {
+    overflow-y: scroll;
+    scrollbar-color: var(--style-col) transparent;
+    width:  100%;
+    height: 500px;
+}
+#imageinput {
+    border: 1px solid red;
+    position: fixed;
+    translate: 10px -4px;
+    left: 0;
+    width: 200px;
+    background: transparent;
+    opacity: 0;
+    z-index: 10000;
+}
+
+.impbtn {
+    transition: 0.3s;
+    width: 200px;
+    float: left;
+    background-color: var(--style-col);
+    border-radius: 5px;
+    padding: 5px;
+    border: 0;
+    color: aliceblue;
+    font-family: 'Segoe UI';
+}
+.clsbtn {
+    transition: 0.3s;
+    width: 200px;
+    float: right;
+    background-color: var(--style-col);
+    border-radius: 5px;
+    padding: 5px;
+    border: 0;
+    color: aliceblue;
+    font-family: 'Segoe UI';
+}
+.clsbtn:hover {
+    background-color: red;
+}
+.photoDIV {
+    animation: bannerAppear 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: 0.3s;
+    float: left;
+    margin-right: 10px;
+}
+.photoDIV:hover {
+    scale: 0.97;
+}
+.newbnrbtntext {
+    position: relative;
+    top: -4.5px;
+    left: 2px;
+}
+
+#APPLYBUTTON {
+    transition: 0.5s;
+    background: var(--style-col);
+    border: 0;
+    color: aliceblue;
+    padding: 5px;
+    padding-right: 0;
+    position: absolute;
+    bottom: 0;
+    right: 20px;
+    left: 0;
+    font-family: 'Segoe UI';
+    font-weight: bold;
+    font-size: 15px;
+}
+#APPLYBUTTON:hover {
+    background: lime;
+    color: black;
+}
+.deletebutton {
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 1px;
+    padding-bottom: 5px;
+    border: 0;
+    position: absolute;
+    bottom: 0;
+    transition: 0.5s;
+    background: var(--style-col);
+    right: 0;
+}
+.deletebutton:hover {
+    filter: invert();
+}
+
+.closeAboutButton {
+    border-radius: 10px;
+    transition: 0.5s;
+    background: var(--style-col);
+    border: 0;
+    color: aliceblue;
+    padding: 5px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    font-family: 'Segoe UI';
+    font-weight: bold;
+    font-size: 15px;
+}
+.closeAboutButton:hover {
+    background: lime;
+    color: black;
+}
+.settinput {
+    position: static;
+    float: none;
+    border-radius: 5px;
+    font-family: 'Segoe UI';
+    color: aliceblue;
+    background-color: transparent;
+    backdrop-filter: none;
+    font-size: 15px;
+    font-weight: bold;
+}
+summary {
+    font-size: 20px;
+}
+
+.applySettingsListBTN {
+    transition: 0.5s;
+    background: var(--style-col);
+    border: 0;
+    color: aliceblue;
+    padding: 5px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 10px;
+    font-family: 'Segoe UI';
+    font-weight: bold;
+    font-size: 15px;
+}
+.applySettingsListBTN:hover {
+    background: lime;
+    color: black;
+}
+
+.discardSettingsListBTN {
+    transition: 0.5s;
+    background: var(--style-col);
+    border: 0;
+    color: aliceblue;
+    padding: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    border-radius: 10px;
+    font-family: 'Segoe UI';
+    font-weight: bold;
+    font-size: 15px;
+}
+.discardSettingsListBTN:hover {
+    background: red;
+}
+#linkmodetip, #importTip {
+    z-index: 1999;
+    transition: 1s;
+    opacity: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 20%, var(--style-col));
+    position: fixed;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    left: 50%;
+    translate: -50%;
+    bottom: 20px;
+    backdrop-filter: blur(5px);
+}
+#importTip {
+    background: linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 30%, var(--style-col));
+    opacity: 0;
+    bottom: auto;
+    top: 13%;
+}
+#historyContent {
+    margin-top: 7px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 17px;
+    height: 200px;
+    overflow-y: scroll;
+    scrollbar-color: var(--style-col) transparent;
+}
+details {
+    background: rgba(255, 255, 255, 0.2);
+    padding-bottom: 7px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    border-radius: 10px;
+}
+#nlname, #nlauthor {
+    float: none;
+    border-radius: 7px;
+    font-family: 'Segoe UI';
+    font-size: 17px;
+    margin-left: 3px;
+    width: 200px;
+    filter: none;
+    color: var(--style-col);
+    right: 10px;
+    position: absolute;
+}
+
+#newlistContainer {
+    width: 400px;
+}
