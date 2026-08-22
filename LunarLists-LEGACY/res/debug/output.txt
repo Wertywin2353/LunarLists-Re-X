@@ -1,0 +1,6 @@
+Collection-Name|Collection-Owner|Last-Modify|BASE64
+Name|https://www.ya.ru/|Description|Status
+Name|https://www.ya.ru/|Description|Status
+Name|https://www.ya.ru/|Description|Status
+Name|https://www.ya.ru/|Description|Status
+name|link|desc|Like
