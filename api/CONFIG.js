@@ -7,7 +7,7 @@ const settings = {
     
     // Path to collection that will be loaded on opening Lunar Lists. Works only with server or .js collection.
     // If left empty skips autoload.
-    "preloadCollPath": "",
+    "preloadCollPath": "your-collection.js",
 
     // UI sounds settings
     "UISFX": {
@@ -37,6 +37,9 @@ const settings = {
         "masterVolume": 0.1
     },
     "TextPlaceholders": {
+        // desired font for app. (Only HTML supported ones)
+        "Font": "Segoe UI",
+
         // If no Date provided this text will show up.
         "NoDateAvaible": "??.??.????",
         // Right panel placeholder title & subtext

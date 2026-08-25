@@ -9,6 +9,7 @@
     --transparentcy-of-tip: 0%;
     --translate-tip: "0px 10px";
     --style-col: blueviolet;
+    --font-Fam: 'Segoe UI';
 }
 
 ::selection {
@@ -21,7 +22,7 @@ html::-webkit-scrollbar {
 display: none;
 }
 body {
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
 }
 bgobj {
     filter: brightness(0);
@@ -84,7 +85,7 @@ header {
     backdrop-filter: blur(15px);
     padding: 10px;
     border-radius: 15px;
-    width: 80%;
+    width: 97.5%;
     margin-left: 10px;
     transition: 0.3s;
 }
@@ -303,7 +304,7 @@ input {
     padding: 5px;
     border: 0;
     color: aliceblue;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
 }
 .clsbtn {
     transition: 0.3s;
@@ -314,7 +315,7 @@ input {
     padding: 5px;
     border: 0;
     color: aliceblue;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
 }
 .clsbtn:hover {
     background-color: red;
@@ -345,7 +346,7 @@ input {
     bottom: 0;
     right: 20px;
     left: 0;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
     font-weight: bold;
     font-size: 15px;
 }
@@ -380,7 +381,7 @@ input {
     bottom: 10px;
     right: 10px;
     left: 10px;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
     font-weight: bold;
     font-size: 15px;
 }
@@ -392,7 +393,7 @@ input {
     position: static;
     float: none;
     border-radius: 5px;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
     color: aliceblue;
     background-color: transparent;
     backdrop-filter: none;
@@ -413,7 +414,7 @@ summary {
     bottom: 10px;
     right: 10px;
     border-radius: 10px;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
     font-weight: bold;
     font-size: 15px;
 }
@@ -432,7 +433,7 @@ summary {
     bottom: 10px;
     left: 10px;
     border-radius: 10px;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
     font-weight: bold;
     font-size: 15px;
 }
@@ -483,7 +484,7 @@ details {
 #nlname, #nlauthor {
     float: none;
     border-radius: 7px;
-    font-family: 'Segoe UI';
+    font-family: var(--font-Fam);
     font-size: 17px;
     margin-left: 3px;
     width: 200px;
@@ -495,4 +496,52 @@ details {
 
 #newlistContainer {
     width: 400px;
+}
+#filter {
+    position: fixed;
+    z-index: 999;
+    overflow: hidden;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    padding: 10px;
+    border-radius: 15px;
+    width: 80%;
+    margin-left: 10px;
+    transition: 0.3s;
+}
+.filterInput {
+    float: left;
+    border-radius: 10px;
+    width: 40%;
+    font-family: var(--font-Fam);
+    font-size: 17px;
+    color: var(--style-col);
+    margin-right: 5px;
+}
+.filterInput::selection {
+    background-color: aliceblue;
+}
+.filterButton {
+    transition: 0.5s;
+    margin-top: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    float: left;
+    margin-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 4px;
+    padding-top: 0px;
+    border-radius: 7px;
+}
+.filterButton:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+#piecesContainer {
+    overflow-y: scroll;
+    position: fixed;
+    
+    width: 82%;
+    height: 80%;
+    scrollbar-width: none;
 }

@@ -16,6 +16,8 @@ let bgV;
 let DatE = new Date();
 let TodayDate;
 let interI;
+let gallerylookupstatus = false;
+let unknownlookupstatus = false;
 let collection;
 let piecebannervar;
 let content = document.getElementById('content');
@@ -112,6 +114,12 @@ function parseColl(time) {
     hideLOGO();
     }
     content.innerHTML = "<br>";
+    let searchBar = "<input class='filterInput' placeholder='Введите название, дату, ссылку, тег, номер в списке или комментарий' oninput='searchForElm(this)'>";
+    let galleryBTN = "<div id='filtgall' onclick='selectTag(this, 1)' class='filterButton'><img src='./res/ui/gallery.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Поиск по баннеру</div>";
+    let unkBTN = "<div id='filtunk' onclick='selectTag(this, 2)' class='filterButton'><img src='./res/ui/question.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Неизвестный статус</div>";
+    content.innerHTML = content.innerHTML + "<div id='filter'>" + searchBar + galleryBTN + unkBTN + "</div><br><br><br>";
+    content.innerHTML = content.innerHTML + "<div id='piecesContainer'></div>";
+    let contentE = document.getElementById('piecesContainer');
     let i = 0;
     while(collection.pieces.length != i) {
         console.log('Loop state: ' + i + "/" + collection.pieces.length);
@@ -145,10 +153,10 @@ function parseColl(time) {
             if(piece[4] == "") {
                 piece[4] =  settings.TextPlaceholders.NoDateAvaible;
             }
-        content.innerHTML = content.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
+        contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
         i++;
     }
-    content.innerHTML = content.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB("Имя элемента||||" + TodayDate) + "&quot;, &quot;NULL&quot;)'>" + iconCREATE + "<h2>Добавить новый элемент</h2><p>Добавить в эту коллекцию что-то новенькое!</p></div><br>";
+    contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB("Имя элемента||||" + TodayDate) + "&quot;, &quot;NULL&quot;)'>" + iconCREATE + "<h2>Добавить новый элемент</h2><p>Добавить в эту коллекцию что-то новенькое!</p></div><br>";
     content.innerHTML = content.innerHTML + "<div id='pieceEditor'><div id='placeolderEditor'><img src='./res/ui/pieceedit.png' style='padding: 5px;'><h2>" + settings.TextPlaceholders.EditPieceTitle[0] + "</h2><p style='font-size:14px; padding:7px;'>" + settings.TextPlaceholders.EditPieceTitle[1] + "</p></div></div>";
     document.getElementById('linkmodetip').style.opacity = "100";
     hidelinkmodetip();
@@ -186,17 +194,29 @@ function opendetails(pieceArr, i) {
     BANNERLOC = placeholderBANNERLOC;
 }
 
-function refreshGallery() {
+function refreshGallery(nn) {
     document.getElementById('gallerytiles').innerHTML = "";
     let i = 0;
+    let additional;
+    if(nn == undefined) {
+        additional = "";
+    }
+    else {
+        additional = ", 1";
+    }
     while(collection.metadata.GALLERY.length != i) {
-        let photoDIV = "<div onclick='choosePIC(&quot;" +  piecebannervar + "&quot;, " + i + ")' class='photoDIV'><img src='" + collection.metadata.GALLERY[i] + "' width='200px' style='border-radius: 10px;'><br><span>Баннер №" + i + "</span></div>";
+        let photoDIV = "<div onclick='choosePIC(&quot;" +  piecebannervar + "&quot;, " + i + additional + ")' class='photoDIV'><img src='" + collection.metadata.GALLERY[i] + "' width='200px' style='border-radius: 10px;'><br><span>Баннер №" + i + "</span></div>";
         document.getElementById('gallerytiles').innerHTML = document.getElementById('gallerytiles').innerHTML + photoDIV;
         i++;
     }
 }
-function choosePIC(arr, bnum) {
+function choosePIC(arr, bnum, numm) {
     galclk.play();
+    if(numm != undefined) {
+        Gallerylook(bnum);
+        closeGallery();
+        return 0;
+    }
     let pieceRAW = decodeB(arr).split("|");
     pieceRAW[0] = document.getElementById('NAMETILE').value;
     pieceRAW[1] = document.getElementById('LINKTILE').value;
@@ -208,6 +228,10 @@ function choosePIC(arr, bnum) {
     opendetails(encodeB(pieceRAW.join("|")), interI);
 }
 function applyChanges(arrn) {
+    gallerylookupstatus = false;
+    document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
+    unknownlookupstatus = false;
+    document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
     let name = document.getElementById('NAMETILE').value;
     let status = "|" + document.getElementById('STATUSTILE').value;
     let link = "|" + document.getElementById('LINKTILE').value;
@@ -257,7 +281,7 @@ function renderSettingsLIST() {
     let lastEdit = iconCOLDATE + "Дата последних изменений: <span style='opacity: 75%;'>" + collection.dateOfEdit + "</span><br>";
     let Listversion = iconCOLVERS + "Поддерживаемая версия Lunar Lists: <span style='opacity: 75%;'>" + collection.metadata.LLReXVERSION + " (И Выше)</span><br>";
     let listdetails = "<details><summary>" + settings.TextPlaceholders.ListSettAbout + "</summary><p style='padding: 5px;'>" + listname + authorname + lastEdit + Listversion + "</p></details>";
-    let galleryoption = "<br><div style='font-size: 18px;'><img src='./res/ui/delete.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>Галлерея коллекции: <span style='color: var(--style-col);'>" + collection.metadata.GALLERY.length + " </span>изображений. " + galdeltext + "</div>";
+    let galleryoption = "<br><div style='font-size: 18px;'><img src='./res/ui/gallery.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>Галлерея коллекции: <span style='color: var(--style-col);'>" + collection.metadata.GALLERY.length + " </span>изображений. " + galdeltext + "</div>";
     let historyoption = "<div style='font-size: 18px;'><img src='./res/ui/history.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>История действий (" + collection.metadata.history.length + " записей)" + hisdeltext + "<div id='historyContent'></div></div>";
     let BTNS = "<br><br><button onclick='writeCollSettings()' class='applySettingsListBTN'>Применить настройки</button><button onclick='closeListSettings()' class='discardSettingsListBTN'>Закрыть без сохранения</button>";
     document.getElementById("listSettContainer").innerHTML = listdetails + galleryoption + historyoption + BTNS;
@@ -277,7 +301,7 @@ function renderHistory() {
     while(collection.metadata.history.length != i) {
         let currentPiece = collection.metadata.history[i].split("$");
         currentPiece[1] = String(currentPiece[1]).replaceAll("|", ", ");
-        historycontent.innerHTML = historycontent.innerHTML + "<div class='contentPiece' style='animation: none; width: unset; background: rgba(0,0,0,0.2);'><h3>Удаленный элемент коллекции №" + currentPiece[0] + "</h3><p>" + currentPiece[1] + "</p></div><br>";
+        historycontent.innerHTML = historycontent.innerHTML + "<div onclick='restoreElm(&quot;" + encodeB(collection.metadata.history[i]) + "&quot;, this, " + i + ")' class='contentPiece' style='animation: none; width: unset; background: rgba(0,0,0,0.2);'><h3>Удаленный элемент коллекции №" + currentPiece[0] + " (Нажмите, чтобы восстановить)</h3><p style='opacity: 50%'>" + currentPiece[1] + "</p></div><br>";
         i++;
     }
 }
@@ -394,4 +418,178 @@ function createList() {
         structure.author = auth.value;
     }
     parseColl();
+}
+
+function searchForElm(input) {
+    gallerylookupstatus = false;
+    document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
+    unknownlookupstatus = false;
+    document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
+    if(input.value == "") {
+        parseColl(1);
+    }
+    else {
+        let contentE = document.getElementById('piecesContainer');
+        contentE.innerHTML = "";
+        let i = 0;
+        while(collection.pieces.length != i) {
+            if(collection.pieces[i].includes(input.value) || i == Number(input.value)) {
+            let piece = collection.pieces[i].split("|");
+            let status;
+                let statusmark;
+                try {
+                    statusmark = piece[3].replaceAll('\r', '');
+                } catch (err) { console.log('Error handled: ' + err); };
+                if(statusmark == "Просмотрено") {
+                    status = "<img src='./res/ui/viewed.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "В очереди") {
+                    status = "<img src='./res/ui/bookmarked.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Понравилось") {
+                    status = "<img src='./res/ui/favorite.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Не понравилось") {
+                    status = "<img src='./res/ui/dislike.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else {
+                    status = "<img src='./res/ui/question.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                if(piece[1] == "") {
+                    piece[1] = settings.TextPlaceholders.NoDescription;
+                }  
+                if(piece[2] == "") {
+                    piece[2] = piece[1];
+                }
+                if(piece[4] == "") {
+                    piece[4] =  settings.TextPlaceholders.NoDateAvaible;
+                }
+            contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
+            i++;
+            } else { i++; }
+        }
+    }
+}
+
+function selectTag(btn, tagNum) {
+    if(tagNum == 1) {
+        if(gallerylookupstatus == true) {
+            gallerylookupstatus = false;
+            document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
+            parseColl(5);
+        }
+        else {
+            openGallery(1);
+        }
+        unknownlookupstatus = false;
+        document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
+    } else if(tagNum == 2) {
+        if(unknownlookupstatus == true) {
+            unknownlookupstatus = false;
+            document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
+            parseColl(6);
+        }
+        else {
+            unknownlookupstatus = true;
+            document.getElementById('filtunk').style.background = "var(--style-col)";
+            let contentE = document.getElementById('piecesContainer');
+        contentE.innerHTML = "";
+        let i = 0;
+        while(collection.pieces.length != i) {
+            let piece = collection.pieces[i].split("|");
+            let status;
+            if(piece[3] != "Просмотрено" && piece[3] != "В очереди" && piece[3] != "Понравилось" && piece[3] != "Не понравилось") {
+                let statusmark;
+                try {
+                    statusmark = piece[3].replaceAll('\r', '');
+                } catch (err) { console.log('Error handled: ' + err); };
+                if(statusmark == "Просмотрено") {
+                    status = "<img src='./res/ui/viewed.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "В очереди") {
+                    status = "<img src='./res/ui/bookmarked.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Понравилось") {
+                    status = "<img src='./res/ui/favorite.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Не понравилось") {
+                    status = "<img src='./res/ui/dislike.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else {
+                    status = "<img src='./res/ui/question.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                if(piece[1] == "") {
+                    piece[1] = settings.TextPlaceholders.NoDescription;
+                }  
+                if(piece[2] == "") {
+                    piece[2] = piece[1];
+                }
+                if(piece[4] == "") {
+                    piece[4] =  settings.TextPlaceholders.NoDateAvaible;
+                }
+            contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
+            i++;
+            } else { i++; }
+        }
+
+        }
+        gallerylookupstatus = false;
+        document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
+    }
+}
+
+function Gallerylook(galnums) {
+    let contentE = document.getElementById('piecesContainer');
+        contentE.innerHTML = "";
+        let i = 0;
+        while(collection.pieces.length != i) {
+            let piece = collection.pieces[i].split("|");
+            let status;
+            if(piece[5] == "") {
+                i++;
+            }
+            else if(piece[5] == Number(galnums)) {
+                let statusmark;
+                try {
+                    statusmark = piece[3].replaceAll('\r', '');
+                } catch (err) { console.log('Error handled: ' + err); };
+                if(statusmark == "Просмотрено") {
+                    status = "<img src='./res/ui/viewed.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "В очереди") {
+                    status = "<img src='./res/ui/bookmarked.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Понравилось") {
+                    status = "<img src='./res/ui/favorite.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Не понравилось") {
+                    status = "<img src='./res/ui/dislike.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else {
+                    status = "<img src='./res/ui/question.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                if(piece[1] == "") {
+                    piece[1] = settings.TextPlaceholders.NoDescription;
+                }  
+                if(piece[2] == "") {
+                    piece[2] = piece[1];
+                }
+                if(piece[4] == "") {
+                    piece[4] =  settings.TextPlaceholders.NoDateAvaible;
+                }
+            contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
+            i++;
+            } else { i++; }
+        }
+    document.getElementById('filtgall').style.background = "var(--style-col)";
+    gallerylookupstatus = true;
+}
+
+function restoreElm(hiselm, item, hisI) {
+    let restoreData = decodeB(hiselm).split("$");
+    collection.pieces.splice(restoreData[0], 0, restoreData[1]);
+    item.style.display = "none";
+    collection.metadata.history.splice(hisI, 1);
+    parseColl(7);
+    renderSettingsLIST();
 }

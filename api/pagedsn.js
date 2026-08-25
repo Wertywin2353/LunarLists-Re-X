@@ -18,9 +18,10 @@ window.onload = function () {
     document.getElementById("bg").style.backgroundImage = "url(" + bglink + ")";
     document.getElementById("bg").style.filter = "brightness(1)";
     document.documentElement.style.setProperty("--style-col", settings.styleColor);
+    document.documentElement.style.setProperty("--font-Fam", settings.TextPlaceholders.Font);
 }
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function linkmodeSwitch(event) {
     let elements = document.querySelectorAll('.contentPiece');
     let edittip = this.documentElement.querySelectorAll('.editTip');
     if (event.ctrlKey) {
@@ -28,6 +29,7 @@ document.addEventListener('keydown', function(event) {
         if(linkmode == true) {
             elements.forEach(element => { element.style.background = "rgba(255, 255, 255, 0.2)"; });
             edittip.forEach(element => { element.style.display = "block"; });
+            document.getElementById('filter').style.opacity = "100%";
             linkmode = false;
             document.getElementById("pieceEditor").innerHTML = pEphld;
         }
@@ -36,6 +38,7 @@ document.addEventListener('keydown', function(event) {
             document.getElementById("pieceEditor").innerHTML = "<div id='placeolderEditor' style='text-align: center;'><img src='./res/ui/link.png' style='padding: 5px;'><h2>" + settings.TextPlaceholders.EditPieceTitle[0] + "</h2><p style='font-size:14px; padding:7px;'>" + settings.TextPlaceholders.EditPieceTitle[2] + "</p></div>";
             elements.forEach(element => { element.style.background = "rgba(255, 255, 255, 0.5)"; });
             edittip.forEach(element => { element.style.display = "none"; });
+            document.getElementById('filter').style.opacity = "70%";
             linkmode = true;
             linkmodes.play();
         }
@@ -59,7 +62,7 @@ function hideLOGO() {
         header.style.backdropFilter = bgtrnbefore;
         header.innerHTML = "";
         header.innerHTML = header.innerHTML + bkmrk + "<div style='margin-left: 35px;'><h2>" + collection.name + "</h2><span>Создал " + collection.author + ", последнее изменение: " + collection.dateOfEdit + "</span><br><hr style='opacity: 0;'></div>";
-        header.innerHTML = header.innerHTML + "<div id='headerSettings'><div class='headerButton' onclick='saveColl()'><img src='./res/ui/save.png' width='50'></div><div class='headerButton' onclick='openListSettings()'><img src='./res/ui/settings.png' width='50'></div></div>"
+        header.innerHTML = header.innerHTML + "<div id='headerSettings'><div class='headerButton' onclick='saveColl()'><img src='./res/ui/save.png' width='50'></div><div class='headerButton' onclick='openListSettings()'><img src='./res/ui/settings.png' width='50'></div>";
     }, 1010 );
 }
 function closeGallery() {
@@ -71,7 +74,7 @@ function closeGallery() {
     );
 }
 function openGallery() {
-    refreshGallery();
+    refreshGallery(1);
     document.getElementById('gallerySplash').style.display = "block";
     setTimeout(
         function () {
