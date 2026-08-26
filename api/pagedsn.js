@@ -24,7 +24,7 @@ window.onload = function () {
 document.addEventListener('keydown', function linkmodeSwitch(event) {
     let elements = document.querySelectorAll('.contentPiece');
     let edittip = this.documentElement.querySelectorAll('.editTip');
-    if (event.ctrlKey) {
+    if (event.code = "Escape") {
 
         if(linkmode == true) {
             elements.forEach(element => { element.style.background = "rgba(255, 255, 255, 0.2)"; });
