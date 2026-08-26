@@ -43,6 +43,9 @@ if(settings.preloadCollPath != "") {
     );
     openimporttip();
 }
+else {
+    document.getElementById('importTip').style.display = "none";
+}
 
 document.addEventListener('click', handleClick);
 function handleClick() {
