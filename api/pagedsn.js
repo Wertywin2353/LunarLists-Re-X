@@ -73,8 +73,8 @@ function closeGallery() {
         }, 550
     );
 }
-function openGallery() {
-    refreshGallery(1);
+function openGallery(ns) {
+    refreshGallery(ns);
     document.getElementById('gallerySplash').style.display = "block";
     setTimeout(
         function () {

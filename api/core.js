@@ -198,7 +198,7 @@ function refreshGallery(nn) {
     document.getElementById('gallerytiles').innerHTML = "";
     let i = 0;
     let additional;
-    if(nn == undefined) {
+    if(nn == undefined || nn == "") {
         additional = "";
     }
     else {
@@ -215,8 +215,8 @@ function choosePIC(arr, bnum, numm) {
     if(numm != undefined) {
         Gallerylook(bnum);
         closeGallery();
-        return 0;
     }
+    else {
     let pieceRAW = decodeB(arr).split("|");
     pieceRAW[0] = document.getElementById('NAMETILE').value;
     pieceRAW[1] = document.getElementById('LINKTILE').value;
@@ -226,6 +226,7 @@ function choosePIC(arr, bnum, numm) {
     pieceRAW[5] = bnum;
     closeGallery();
     opendetails(encodeB(pieceRAW.join("|")), interI);
+    }
 }
 function applyChanges(arrn) {
     gallerylookupstatus = false;
