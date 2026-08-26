@@ -7,7 +7,7 @@ const settings = {
     
     // Path to collection that will be loaded on opening Lunar Lists. Works only with server or .js collection.
     // If left empty skips autoload.
-    "preloadCollPath": "your-collection.js",
+    "preloadCollPath": "",
 
     // UI sounds settings
     "UISFX": {
