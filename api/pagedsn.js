@@ -46,6 +46,11 @@ document.addEventListener('keydown', function linkmodeSwitch(event) {
     elements.forEach(element => { element.style.background = "rgba(255, 255, 255, 0.2)"; });
     linkmode = false;
   }
+  if (event.ctrlKey && event.key == 'Enter') {
+    event.preventDefault();
+    SaveCollection();
+    openexporttip();
+  }
 });
 
 function hideLOGO() {
@@ -61,7 +66,7 @@ function hideLOGO() {
         header.style.background = bgcolbefore;
         header.style.backdropFilter = bgtrnbefore;
         header.innerHTML = "";
-        header.innerHTML = header.innerHTML + bkmrk + "<div style='margin-left: 35px;'><h2>" + collection.name + "</h2><span>Создал " + collection.author + ", последнее изменение: " + collection.dateOfEdit + "</span><br><hr style='opacity: 0;'></div>";
+        header.innerHTML = header.innerHTML + bkmrk + "<div style='margin-left: 35px;'><h2>" + collection.name + "</h2><span>" + settings.TextPlaceholders.HeaderListDescription[0] + collection.author + settings.TextPlaceholders.HeaderListDescription[1] + collection.dateOfEdit + "</span><br><hr style='opacity: 0;'></div>";
         header.innerHTML = header.innerHTML + "<div id='headerSettings'><div class='headerButton' onclick='saveColl()'><img src='./res/ui/save.png' width='50'></div><div class='headerButton' onclick='openListSettings()'><img src='./res/ui/settings.png' width='50'></div>";
     }, 1010 );
 }
@@ -134,6 +139,33 @@ async function openimporttip() {
     document.getElementById('importTip').style.display = "none";
 }
 
+
+async function openexporttip() {
+    document.getElementById('exportTip').style.display = "block";
+    await delay(10);
+    document.getElementById('exportTip').style.opacity = 100;
+    await delay(1000);
+    document.getElementById('exportTip').style.opacity = 0;
+    await delay(1000);
+    document.getElementById('exportTip').style.display = "none";
+}
+function openSaveAs() {
+    document.getElementById('SaveAsSplash').style.display = "block";
+    setTimeout(
+        function () {
+            document.getElementById('SaveAsSplash').style.opacity = 100;
+        }, 1
+    );
+}
+function closeSaveAs() {
+    document.getElementById('SaveAsSplash').style.opacity = 0;
+    setTimeout(
+        function () {
+            document.getElementById('SaveAsSplash').style.display = "none";
+        }, 550
+    );
+}
+
 function openNL() {
     galclk.play();
     document.getElementById('NewListSplash').style.display = "block";
@@ -151,3 +183,10 @@ function closeNL() {
         }, 550
     );
 }
+
+window.addEventListener('beforeunload', function (event) {
+    if (hasUnsavedChanges) {
+        event.preventDefault();
+        event.returnValue = '';
+    }
+});

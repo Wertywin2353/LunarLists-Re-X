@@ -257,7 +257,7 @@ input {
     padding: 5px;
     width: 97%;
 }
-#gallerySplash, #aboutSplash, #listSettSplash, #NewListSplash {
+#gallerySplash, #aboutSplash, #listSettSplash, #NewListSplash, #SaveAsSplash {
     opacity: 0;
     transition: 0.5s;
     display: none;
@@ -336,6 +336,7 @@ input {
 }
 
 #APPLYBUTTON {
+    border-radius: 5px 0 0 0;
     transition: 0.5s;
     background: var(--style-col);
     border: 0;
@@ -355,6 +356,7 @@ input {
     color: black;
 }
 .deletebutton {
+    border-radius: 0 5px 0 0;
     padding-right: 5px;
     padding-left: 5px;
     padding-top: 1px;
@@ -440,7 +442,7 @@ summary {
 .discardSettingsListBTN:hover {
     background: red;
 }
-#linkmodetip, #importTip {
+#linkmodetip, #importTip, #exportTip {
     z-index: 1999;
     transition: 1s;
     opacity: 0;
@@ -544,4 +546,46 @@ details {
     width: 82%;
     height: 80%;
     scrollbar-width: none;
+}
+
+button {
+    border: 0;
+    transition: 0.5s;
+    background: rgba(255, 255, 255, 0.2);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    border-radius: 5px;
+    font-size: 15px;
+    color: aliceblue;
+    font-family: var(--font-Fam);
+}
+button:hover {
+    background: var(--style-col);
+}
+
+select {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 0;
+    font-family: var(--font-Fam);
+    float: right;
+    filter: none;
+    margin-right: 2px;
+    margin-top: 2.5px;
+    font-size: 17px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: 0 10px 10px 0;
+    color: var(--style-col);
+}
+#saname {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 0;
+    font-family: var(--font-Fam);
+    font-size: 17px;
+    float: unset;
+    width: 180px;
+    padding-top: 3px;
+    padding-bottom: 4.5px;
 }

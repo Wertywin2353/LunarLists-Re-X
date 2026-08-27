@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
     <!-- https://icons8.com/icons/all--style-material-rounded -->
+     <datalist id="def-statuses">
+        <option>Понравилось</option>
+        <option>Не понравилось</option>
+        <option>Просмотрено</option>
+        <option>В очереди</option>
+    </datalist>
     <link rel="stylesheet" href="api/style.css">
     <link rel="icon" href="./res/ui/icon.png">
     <meta charset="UTF-8">
@@ -17,6 +23,7 @@
     <!-- -->
     <div id='linkmodetip'><img src='./res/ui/link.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Чтобы удобно переходить по ссылкам, нажмите Esc.</span></div>
     <div id='importTip'><img src='./res/ui/list.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Автоимпорт коллекции...</span></div>
+    <div id='exportTip' style="display: none;"><img src='./res/ui/list.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Сохранение коллекции...</span></div>
     <div id="content">
         <div id="addlist">
             <input id="fileinput" type="file" style="border: 1px red solid;">
@@ -104,6 +111,27 @@
                 <span style="font-size: 17px;"><img src='./res/ui/favorite.png' style="filter: invert(); translate: -1px -1px;" class='icon'>Автор коллекции: </span><input id="nlauthor" placeholder="Me">
                 <br><br><br><br>
                 <button class="closeAboutButton" onclick="createList()">Создать коллекцию</button>
+            </div>
+        </div>
+    </div>
+    <div id="SaveAsSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
+            <h2 style="margin-left: 5px; margin-bottom: 5px; color: aliceblue;">Сохранение коллекции</h2>
+            <div id="newlistContainer" style="text-align: left;">
+                <span style="font-size: 17px;"><img src='./res/ui/list.png' style="filter: invert(); translate: -1px -1px;" class='icon'>Название файла: </span><input id="saname" placeholder="your-collection">
+                <select id="extsel">
+                    <option value="coll" selected>.coll</option>
+                    <option value="json">.json</option>
+                    <option value="js">.js</option>
+                </select>       
+                <br><br>   
+                <p style="background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 10px;">
+                    <img src='./res/ui/status.png' class='icon' style='filter: invert(); width: 20px; translate: 0 -1px;'>
+                    Рекомендация:<br>
+                    Если не хотите каждый раз кастомизировать имя файла и его расширение просто нажмите Ctrl + Enter. Тогда файл сохранится с именем коллекции и автоматическим расширением ".coll".
+                </p>
+                <br><br>
+                <button class="closeAboutButton" onclick="SaveCollection()">Сохранить коллекцию</button>
             </div>
         </div>
     </div>

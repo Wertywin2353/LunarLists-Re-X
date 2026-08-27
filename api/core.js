@@ -16,8 +16,10 @@ let bgV;
 let DatE = new Date();
 let TodayDate;
 let interI;
+let hasUnsavedChanges = false; 
 let gallerylookupstatus = false;
 let unknownlookupstatus = false;
+let Inqueuelookupstatus = false;
 let collection;
 let piecebannervar;
 let content = document.getElementById('content');
@@ -106,6 +108,7 @@ inputOBJ.onchange = (e) => {
 
 
 function parseColl(time) {
+    hasUnsavedChanges = true;
     if(time == undefined) {
     importClick.play();
     if(collection != undefined) {
@@ -117,10 +120,11 @@ function parseColl(time) {
     hideLOGO();
     }
     content.innerHTML = "<br>";
-    let searchBar = "<input class='filterInput' placeholder='Введите название, дату, ссылку, тег, номер в списке или комментарий' oninput='searchForElm(this)'>";
+    let searchBar = "<input class='filterInput' placeholder='" + settings.TextPlaceholders.FilterBarPlaceholder + "' oninput='searchForElm(this)'>";
     let galleryBTN = "<div id='filtgall' onclick='selectTag(this, 1)' class='filterButton'><img src='./res/ui/gallery.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Поиск по баннеру</div>";
     let unkBTN = "<div id='filtunk' onclick='selectTag(this, 2)' class='filterButton'><img src='./res/ui/question.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Неизвестный статус</div>";
-    content.innerHTML = content.innerHTML + "<div id='filter'>" + searchBar + galleryBTN + unkBTN + "</div><br><br><br>";
+    let queBTN = "<div id='filtinq' onclick='selectTag(this, 3)' class='filterButton'><img src='./res/ui/bookmarked.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>В очереди</div>";
+    content.innerHTML = content.innerHTML + "<div id='filter'>" + searchBar + queBTN + galleryBTN + unkBTN + "</div><br><br><br>";
     content.innerHTML = content.innerHTML + "<div id='piecesContainer'></div>";
     let contentE = document.getElementById('piecesContainer');
     let i = 0;
@@ -183,7 +187,7 @@ function opendetails(pieceArr, i) {
     }
     let headerLOC = "<h3 style='font-weight:normal; text-align: center;'>" + settings.TextPlaceholders.CurrentPieceTitle + "</h3><hr style='border: 1px solid black;'><br>";
     let NAMELOC = "<div class='editortile'><textarea id='NAMETILE'>" + pieceRAW[0] + "</textarea></div>";
-    let STATUSLOC = "<div class='editortile'>" + iconSTATUS + "Статус: <input id='STATUSTILE' value='" + pieceRAW[3] + "'></div>";
+    let STATUSLOC = "<div class='editortile'>" + iconSTATUS + "Статус: <input list='def-statuses' id='STATUSTILE' value='" + pieceRAW[3] + "'></div>";
     let LINKLOC = "<div class='editortile'>" + iconLINK + "Ссылка: <input id='LINKTILE' value='" + pieceRAW[1] + "'></div>";
     let DATELOC = "<div class='editortile'>" + iconDATEOFWATCH + "Внесено: <input id='DATETILE' value='" + pieceRAW[4].replaceAll("undefined", "") + "'></div>";
     let COMMLOC = "<div class='editortile'>" + iconDESC + "Добавленный коментарий:<br><hr style='opacity:0; border: 2px solid red;'><textarea id='COMTILE'>" + pieceRAW[2] + "</textarea></div>";
@@ -271,8 +275,8 @@ function deletePiece(arrn) {
 }
 
 function renderSettingsLIST() {
-    let hisdeltext = "<span style='opacity: 65%;' onclick='eraseHISTORY()'> Нажмите, чтобы удалить!</span>";
-    let galdeltext = "<span style='opacity: 65%;' onclick='eraseGALLERY()'>Нажмите, чтобы удалить!</span>";
+    let hisdeltext = "<button onclick='eraseHISTORY()'> Нажмите, чтобы удалить!</button>";
+    let galdeltext = "<button onclick='eraseGALLERY()'>Нажмите, чтобы удалить!</button>";
     if(collection.metadata.history.length == 0) {
         hisdeltext = "";
     }
@@ -280,10 +284,10 @@ function renderSettingsLIST() {
         galdeltext = "";
     }
     document.getElementById("listSettContainer").innerHTML = "";
-    let listname = "<h2>" + iconCOLNAME + "Имя коллекции: <input id='settinpLNAME' class='settinput' value='" + collection.name + "'></h2>";
-    let authorname = "<h3 style='margin-left: 1.5px;'>" + iconCOLAUTHOR + "Автор коллекции: <input id='settinpLAUTH' class='settinput' value='" + collection.author + "'></h3>";
-    let lastEdit = iconCOLDATE + "Дата последних изменений: <span style='opacity: 75%;'>" + collection.dateOfEdit + "</span><br>";
-    let Listversion = iconCOLVERS + "Поддерживаемая версия Lunar Lists: <span style='opacity: 75%;'>" + collection.metadata.LLReXVERSION + " (И Выше)</span><br>";
+    let listname = "<h2>" + iconCOLNAME + settings.TextPlaceholders.ListSettingsTexts[0] + "<input id='settinpLNAME' class='settinput' value='" + collection.name + "'></h2>";
+    let authorname = "<h3 style='margin-left: 1.5px;'>" + iconCOLAUTHOR + settings.TextPlaceholders.ListSettingsTexts[1] + "<input id='settinpLAUTH' class='settinput' value='" + collection.author + "'></h3>";
+    let lastEdit = iconCOLDATE + settings.TextPlaceholders.ListSettingsTexts[2] + "<span style='opacity: 75%;'>" + collection.dateOfEdit + "</span><br>";
+    let Listversion = iconCOLVERS + settings.TextPlaceholders.ListSettingsTexts[3] + "<span style='opacity: 75%;'>" + collection.metadata.LLReXVERSION + " (И Выше)</span><br>";
     let listdetails = "<details><summary>" + settings.TextPlaceholders.ListSettAbout + "</summary><p style='padding: 5px;'>" + listname + authorname + lastEdit + Listversion + "</p></details>";
     let galleryoption = "<br><div style='font-size: 18px;'><img src='./res/ui/gallery.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>Галлерея коллекции: <span style='color: var(--style-col);'>" + collection.metadata.GALLERY.length + " </span>изображений. " + galdeltext + "</div>";
     let historyoption = "<div style='font-size: 18px;'><img src='./res/ui/history.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>История действий (" + collection.metadata.history.length + " записей)" + hisdeltext + "<div id='historyContent'></div></div>";
@@ -343,14 +347,15 @@ function writeCollSettings() {
 }
 function saveColl() {
     collection.dateOfEdit = TodayDate;
-    document.getElementById('dwn').click();
+    openSaveAs();
+    document.getElementById('saname').value = sanitizeFilename(collection.name);
 }
 
 document.getElementById('dwn').onclick = function () {
     var csvData = 'data:application/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(collection));
     this.href = csvData;
     this.target = '_blank';
-    this.download = 'your-collection.json';
+    this.download = String(filenameX + "." + exts);
     console.log('[Task: Save list] Task finished.');
 }
 
@@ -407,7 +412,7 @@ document.getElementById('debugdwn').onclick = function () {
     var csvData = 'data:application/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(structure));
     this.href = csvData;
     this.target = '_blank';
-    this.download = 'your-collection.json';
+    this.download = String("converted.coll");
     console.log('[Task: Save list] Task finished.');
 }
 
@@ -486,7 +491,9 @@ function selectTag(btn, tagNum) {
             openGallery(1);
         }
         unknownlookupstatus = false;
+        Inqueuelookupstatus = false;
         document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
+        document.getElementById('filtinq').style.background = "rgba(255, 255, 255, 0.2)";
     } else if(tagNum == 2) {
         if(unknownlookupstatus == true) {
             unknownlookupstatus = false;
@@ -538,7 +545,64 @@ function selectTag(btn, tagNum) {
 
         }
         gallerylookupstatus = false;
+        Inqueuelookupstatus = false;
         document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
+        document.getElementById('filtinq').style.background = "rgba(255, 255, 255, 0.2)";
+    }
+    else if(tagNum == 3) {
+        if(Inqueuelookupstatus == true) {
+            Inqueuelookupstatus = false;
+            btn.style.background = "rgba(255, 255, 255, 0.2)";
+            parseColl(6);
+        }
+        else {
+            Inqueuelookupstatus = true;
+            btn.style.background = "var(--style-col)";
+            let contentE = document.getElementById('piecesContainer');
+        contentE.innerHTML = "";
+        let i = 0;
+        while(collection.pieces.length != i) {
+            let piece = collection.pieces[i].split("|");
+            let status;
+            if(piece[3] == "В очереди") {
+                let statusmark;
+                try {
+                    statusmark = piece[3].replaceAll('\r', '');
+                } catch (err) { console.log('Error handled: ' + err); };
+                if(statusmark == "Просмотрено") {
+                    status = "<img src='./res/ui/viewed.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "В очереди") {
+                    status = "<img src='./res/ui/bookmarked.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Понравилось") {
+                    status = "<img src='./res/ui/favorite.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else if(statusmark == "Не понравилось") {
+                    status = "<img src='./res/ui/dislike.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                else {
+                    status = "<img src='./res/ui/question.png' style='margin-right: 5px;' width='50' align='left'>";
+                }
+                if(piece[1] == "") {
+                    piece[1] = settings.TextPlaceholders.NoDescription;
+                }  
+                if(piece[2] == "") {
+                    piece[2] = piece[1];
+                }
+                if(piece[4] == "") {
+                    piece[4] =  settings.TextPlaceholders.NoDateAvaible;
+                }
+            contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
+            i++;
+            } else { i++; }
+        }
+
+        }
+        gallerylookupstatus = false;
+        unknownlookupstatus = false;
+        document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
+        document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
     }
 }
 
@@ -596,4 +660,19 @@ function restoreElm(hiselm, item, hisI) {
     collection.metadata.history.splice(hisI, 1);
     parseColl(7);
     renderSettingsLIST();
+}
+
+function sanitizeFilename(filename) {
+  if (typeof filename !== 'string') return '';
+  let sanitized = filename.replaceAll('/[\\/:*?"<>|[\x00-\x1F\x7F]/g', '');
+  sanitized = sanitized.replaceAll('/[. ]+$/g', '');
+  return sanitized.length > 0 ? sanitized : 'your-collection';
+}
+
+let filenameX, exts;
+function SaveCollection() {
+    filenameX = sanitizeFilename(document.getElementById('saname').value);
+    exts = document.getElementById('extsel').value;
+    document.getElementById('dwn').click();
+    closeSaveAs();
 }

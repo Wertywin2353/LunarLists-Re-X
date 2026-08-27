@@ -55,7 +55,13 @@ const settings = {
         // This text will show up if collection has no history records.
         "NoHistory": "У данной коллекции еще нет истории действий.",
 
-        "EditTip": "Нажмите для правки ->"
+        "EditTip": "Нажмите для правки ->",
+
+        "HeaderListDescription": ["Создал ", ", последнее изменение: "],
+
+        "ListSettingsTexts": ["Имя коллекции: ", "Автор коллекции: ", "Дата последних изменений: ", "Поддерживаемая версия Lunar Lists: ",],
+
+        "FilterBarPlaceholder": "Введите название, дату, ссылку, тег, номер в списке или комментарий"
 
     }
 }
