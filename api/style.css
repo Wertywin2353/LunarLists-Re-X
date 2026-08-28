@@ -590,7 +590,7 @@ select {
     font-family: var(--font-Fam);
     font-size: 17px;
     float: unset;
-    width: 180px;
+    width: 160px;
     padding-top: 3px;
     padding-bottom: 4.5px;
 }
