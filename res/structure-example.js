@@ -5,7 +5,7 @@ let structure = {
     "pieces": [
     ],
     "metadata": {
-        "LLReXVERSION": "1.1Rel",
+        "LLReXVERSION": "1.2Rel+",
         "history": [],
         "GALLERY": [
         ]

@@ -79,12 +79,14 @@ function closeGallery() {
     );
 }
 function openGallery(ns) {
-    refreshGallery(ns);
+    document.getElementById('GalPreLoadSplash').style.display = "block";
     document.getElementById('gallerySplash').style.display = "block";
     setTimeout(
         function () {
+            refreshGallery(ns);
+            document.getElementById('GalPreLoadSplash').style.display = "none";
             document.getElementById('gallerySplash').style.opacity = 100;
-        }, 1
+        }, 100
     );
 }
 function closeAbout() {

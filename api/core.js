@@ -124,7 +124,8 @@ function parseColl(time) {
     let galleryBTN = "<div id='filtgall' onclick='selectTag(this, 1)' class='filterButton'><img src='./res/ui/gallery.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Поиск по баннеру</div>";
     let unkBTN = "<div id='filtunk' onclick='selectTag(this, 2)' class='filterButton'><img src='./res/ui/question.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Неизвестный статус</div>";
     let queBTN = "<div id='filtinq' onclick='selectTag(this, 3)' class='filterButton'><img src='./res/ui/bookmarked.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>В очереди</div>";
-    content.innerHTML = content.innerHTML + "<div id='filter'>" + searchBar + queBTN + galleryBTN + unkBTN + "</div><br><br><br>";
+    let addBTN = "<div id='filtadd' onclick='selectTag(this, 4)' class='filterButton'><img src='./res/ui/create.png' class='icon' style='margin-right: 1.5px; margin-bottom: 1px;'>Добавить элемент</div>";
+    content.innerHTML = content.innerHTML + "<div id='filter'>" + searchBar + addBTN + queBTN + galleryBTN + unkBTN + "</div><br><br><br>";
     content.innerHTML = content.innerHTML + "<div id='piecesContainer'></div>";
     let contentE = document.getElementById('piecesContainer');
     let i = 0;
@@ -163,7 +164,7 @@ function parseColl(time) {
         contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB(piece.join("|")) + "&quot;, " + i + ")'>" + status + "<h2 style='width: 75%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[0] + "</h2><p style='width: 60%; overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;'>" + piece[2] + "</p><span class='countmark'>" + piece[4].replaceAll("undefined", "") + ", № " + i + "</span><br><span class='editTip'>" + settings.TextPlaceholders.EditTip + "</span></div><br>";
         i++;
     }
-    contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB("Имя элемента||||" + TodayDate) + "&quot;, &quot;NULL&quot;)'>" + iconCREATE + "<h2>Добавить новый элемент</h2><p>Добавить в эту коллекцию что-то новенькое!</p></div><br>";
+    contentE.innerHTML = contentE.innerHTML + "<div class='contentPiece' onclick='opendetails(&quot;" + encodeB("Имя элемента||||" + TodayDate) + "&quot;, &quot;NULL&quot;)'>" + iconCREATE + "<h2>Добавить новый элемент</h2><p>Добавить в эту коллекцию что-то новенькое!</p></div><br><br><br><br>";
     content.innerHTML = content.innerHTML + "<div id='pieceEditor'><div id='placeolderEditor'><img src='./res/ui/pieceedit.png' style='padding: 5px;'><h2>" + settings.TextPlaceholders.EditPieceTitle[0] + "</h2><p style='font-size:14px; padding:7px;'>" + settings.TextPlaceholders.EditPieceTitle[1] + "</p></div></div>";
     document.getElementById('linkmodetip').style.opacity = "100";
     hidelinkmodetip();
@@ -603,6 +604,17 @@ function selectTag(btn, tagNum) {
         unknownlookupstatus = false;
         document.getElementById('filtgall').style.background = "rgba(255, 255, 255, 0.2)";
         document.getElementById('filtunk').style.background = "rgba(255, 255, 255, 0.2)";
+    }
+    else if(tagNum == 4) {
+        btn.style.background = "var(--style-col)";
+        btn.style.scale = "0.98";
+        setTimeout(
+            function () {
+                btn.style.background = "rgba(255, 255, 255, 0.2)";
+                btn.style.scale = "1";
+            }, 500
+        );
+        opendetails(encodeB("Имя элемента||||" + TodayDate), "NULL");
     }
 }
 
