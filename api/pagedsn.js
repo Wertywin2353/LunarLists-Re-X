@@ -15,10 +15,16 @@ let linkmodetip = "";
 let delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let BANNERLOC = "<div onclick='openGallery()' class='editortile' style='text-align: center; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border-radius: 10px;'><br><img src='./res/ui/create.png'><br><span>Добавить баннер</span><br><br></div><br>";
 window.onload = function () {
+    UpdateCheck();
     document.getElementById("bg").style.backgroundImage = "url(" + bglink + ")";
     document.getElementById("bg").style.filter = "brightness(1)";
     document.documentElement.style.setProperty("--style-col", settings.styleColor);
     document.documentElement.style.setProperty("--font-Fam", settings.TextPlaceholders.Font);
+    setTimeout(
+        function () {
+            document.getElementById("homeTip").innerText = tips[getRandomIntInclusive(0, tips.length)];
+        }, 500
+    );
 }
 
 document.addEventListener('keydown', function linkmodeSwitch(event) {
@@ -48,25 +54,31 @@ document.addEventListener('keydown', function linkmodeSwitch(event) {
   }
   if (event.ctrlKey && event.key == 'Enter') {
     event.preventDefault();
+    unsaved.length = 0;
+    unsavedChangesTracker();
     SaveCollection();
     openexporttip();
   }
 });
 
+let shieldIco = "";
 function hideLOGO() {
+    if(collection.encrypted) {
+        shieldIco = "<img src='./res/ui/protection.png' style='top: 2px; left: 3px;' class='icon'>";
+    }
     logo.style.animation = "hidelogo 1s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
     let bgcolbefore = header.style.background;
     let bgtrnbefore = header.style.backdropFilter;
     header.style.background = "transparent";
     setTimeout(function () {
-        let bkmrk = "<img src='./res/ui/list.png' width='50' style='float: left; animation: listappear 1s cubic-bezier(0.165, 0.84, 0.44, 1);'>"
+        let bkmrk = " <img src='./res/ui/list.png' width='50' style='float: left; animation: listappear 1s cubic-bezier(0.165, 0.84, 0.44, 1);'>"
         logo.style.display = "none";
         header.style.textAlign = 'left';
         header.style.borderRadius = "0 0 20px 20px";
         header.style.background = bgcolbefore;
         header.style.backdropFilter = bgtrnbefore;
         header.innerHTML = "";
-        header.innerHTML = header.innerHTML + bkmrk + "<div style='margin-left: 35px;'><h2>" + collection.name + "</h2><span>" + settings.TextPlaceholders.HeaderListDescription[0] + collection.author + settings.TextPlaceholders.HeaderListDescription[1] + collection.dateOfEdit + "</span><br><hr style='opacity: 0;'></div>";
+        header.innerHTML = header.innerHTML + bkmrk + "<div style='margin-left: 35px;'><h2 id='headerCollName'>" + collection.name + shieldIco + "</h2><span>" + settings.TextPlaceholders.HeaderListDescription[0] + collection.author + settings.TextPlaceholders.HeaderListDescription[1] + collection.dateOfEdit + "</span><br><hr style='opacity: 0;'></div>";
         header.innerHTML = header.innerHTML + "<div id='headerSettings'><div class='headerButton' onclick='saveColl()'><img src='./res/ui/save.png' width='50'></div><div class='headerButton' onclick='openListSettings()'><img src='./res/ui/settings.png' width='50'></div>";
     }, 1010 );
 }
@@ -152,6 +164,14 @@ async function openexporttip() {
     document.getElementById('exportTip').style.display = "none";
 }
 function openSaveAs() {
+    if(hasBeenEncrypted != true) {
+        let part1 = "<span>Использовать защиту AES-256?</span><br><input id='passForEnc' type='password' placeholder='Оставьте это поле пустым, если нет'>";
+        document.getElementById("aesAsk").innerHTML = part1;
+    }
+    else {
+        let part1 = "<span><img src='res/ui/protection.png' class='icon' style='filter: invert();'> Данный файл будет экспортирован с защитой AES-256.</span>";
+        document.getElementById("aesAsk").innerHTML = part1;
+    }
     document.getElementById('SaveAsSplash').style.display = "block";
     setTimeout(
         function () {
@@ -190,5 +210,72 @@ window.addEventListener('beforeunload', function (event) {
     if (hasUnsavedChanges) {
         event.preventDefault();
         event.returnValue = '';
+        openUnsaved();
     }
 });
+
+function openUnsaved() {
+    document.getElementById('uscplhldr').innerHTML = unsaved.join("<br>");
+    document.getElementById('UnSavedSplash').style.display = "block";
+    setTimeout(
+        function () {
+            document.getElementById('UnSavedSplash').style.opacity = 100;
+        }, 1
+    );
+}
+function closeUnsaved() {
+    document.getElementById('UnSavedSplash').style.opacity = 0;
+    setTimeout(
+        function () {
+            document.getElementById('UnSavedSplash').style.display = "none";
+        }, 550
+    );
+}
+
+function changeTip() {
+    document.getElementById("homeTip").innerText = tips[getRandomIntInclusive(0, tips.length)];
+}
+
+function showDecSplash() {
+    document.getElementById('DecSplash').style.display = "block";
+    setTimeout(
+        function () {
+            document.getElementById('DecSplash').style.opacity = 100;
+        }, 1
+    );
+}
+function hideDecSplash() {
+    GlobalKey = document.getElementById('passToColl').value;
+    document.getElementById('DecSplash').style.opacity = 0;
+    setTimeout(
+        function () {
+            document.getElementById('DecSplash').style.display = "none";
+        }, 550
+    );
+}
+
+function openEDProc() {
+    document.getElementById('EncryptionProcSplash').style.display = "block";
+    setTimeout(
+        function () {
+            document.getElementById('EncryptionProcSplash').style.opacity = 100;
+        }, 1
+    );
+}
+function closeEDProc() {
+    document.getElementById('EncryptionProcSplash').style.opacity = 0;
+    setTimeout(
+        function () {
+            document.getElementById('EncryptionProcSplash').style.display = "none";
+        }, 550
+    );
+}
+async function showReadyTip() {
+    document.getElementById('readyTip').style.display = "block";
+    await delay(10);
+    document.getElementById('readyTip').style.opacity = 100;
+    await delay(3000);
+    document.getElementById('readyTip').style.opacity = 0;
+    await delay(1000);
+    document.getElementById('readyTip').style.display = "none";
+}

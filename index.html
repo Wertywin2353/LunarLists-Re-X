@@ -16,6 +16,7 @@
 </head>
 <body>
     <header id="header">
+        <img id="updState" src="res/ui/vers.png" title="Проверка наличия обновлений...">
         <img src="res/ui/logo.png" id="Headerlogo">
     </header>
     <!-- Separator for header (yea spamming br's & invisible hr) -->
@@ -24,6 +25,7 @@
     <div id='linkmodetip'><img src='./res/ui/link.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Чтобы удобно переходить по ссылкам, нажмите Esc.</span></div>
     <div id='importTip'><img src='./res/ui/list.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Автоимпорт коллекции...</span></div>
     <div id='exportTip' style="display: none;"><img src='./res/ui/list.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Сохранение коллекции...</span></div>
+    <div id='readyTip' style="display: none;"><img src='./res/ui/protection.png' class='icon' style="margin-bottom: 0.5px;"><span style="margin-left: 5px;">Повторное дешифрование завершено!</span></div>
     <div id="content">
         <div id="addlist">
             <input id="fileinput" type="file" style="border: 1px red solid;">
@@ -48,6 +50,10 @@
                 <span>О проекте</span>
             </div>
         </div>
+        <div id="tips" onclick="changeTip()">
+            <img src='./res/ui/com.png' class='icon' style='width: 20px; translate: 0 -1px;'>
+            <b>Интересный факт: </b><span id="homeTip"></span>
+        </div>
     </div>
     <div id="gallerySplash">
         <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
@@ -71,7 +77,7 @@
             <img src="./res/ui/logo.png" width="500px"><hr style="border: 2px solid var(--style-col); margin-top: 5px;"><br>
             <p style="text-align: left;">
                 <img src='./res/ui/vers.png' style="filter:invert();" class='icon'>
-                <b>Версия ПО:</b><span> 1.2Rel+</span>
+                <b>Версия ПО:</b><span id="version"> 1.3Rel</span>
                 <br>
                 <img src='./res/ui/dev.png' style="filter:invert();" class='icon'>
                 <b>Разработчик:</b><span> Wertywin2353,</span>
@@ -130,7 +136,7 @@
                     Рекомендация:<br>
                     Если не хотите каждый раз кастомизировать имя файла и его расширение просто нажмите Ctrl + Enter. Тогда файл сохранится с именем коллекции и автоматическим расширением ".coll".
                 </p>
-                <br><br>
+                <br><div id="aesAsk"></div><br><br><br>
                 <button class="closeAboutButton" onclick="SaveCollection()">Сохранить коллекцию</button>
             </div>
         </div>
@@ -141,6 +147,42 @@
             <h2>Галерея загружается...</h2>
         </div>
     </div>
+    <div id="UnSavedSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%; text-align: center;">
+            <h2 style="text-align: left; margin-left: 5px; margin-bottom: 7px; color: aliceblue;">Подождите!</h2>
+            <div id="unsavedcontainer" style="text-align: left;">
+                <h3><img src='./res/ui/inprog.png' class='icon' style='filter: invert(); translate: 0 -1px; margin-right: 2px;'>В вашей коллекции есть несохранненые изменения!</h3>
+                <br>
+                <span>Вот список того, что еще не сохранено:</span>
+                <p id="uscplhldr"></p>
+                <br>
+                <button class="clsbtn" style="float: left;" onclick="hasUnsavedChanges = false; window.close()">Закрыть в любом случае</button>
+                <button class='backToEditBTN' onclick="closeUnsaved()" style="float: right;">Вернутся</button>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div id="DecSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%; text-align: center;">
+            <h2 style="text-align: left; margin-left: 5px; margin-bottom: 7px; color: aliceblue;">Дешифровать файл коллекции</h2>
+            <div id="deccontainer">
+            <h3><img src='./res/ui/shield-warn.png' class='icon' style='filter: invert(); translate: 0 -1px; margin-right: 2px;'>Эта коллекция защищенна симметричным шифрованием AES-256.</h3>
+            <br>
+            <span>Введите ключ:</span>
+            <br><br>
+            <input type="password" placeholder="ключ" id="passToColl">
+            <br><br><br>
+            <button class="closeAboutButton" onclick="tryToDecypt(this)">Дешифровать коллекцию</button>
+            </div>
+        </div>
+    </div>
+    <div id="EncryptionProcSplash">
+        <div style="position: absolute; left: 50%; top: 50%; translate: -50% -50%; text-align: center;">
+            <img src="res/ui/shield.png" style="filter: invert(); width: 120px;">
+            <h2>Обработка данных...</h2>
+            <div id="EncDecStatus" style="text-align: left;"></div>
+        </div>
+    </div>
     <a href=# id="dwn" style="display: none;">записать</a>
     <a href=# id="debugdwn" style="display: none;">записать (debug)</a>
     <bgobj id="bg"></bgobj>
@@ -148,6 +190,7 @@
     <script src="api/pagedsn.js"></script>
     <script src="api/core.js"></script>
     <script src="api/LazyLib-L.js"></script>
-    <script src="res/structure-example.js"></script>
+    <script src="api/version.js"></script>
+    <script src="api/security.js"></script>
 </body>
 </html>

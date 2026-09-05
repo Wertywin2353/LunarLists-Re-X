@@ -11,6 +11,7 @@ let galclk = new Audio(settings.UISFX.UIUseBannerClick);
 let UISFXSTATE = settings.UISFX.state;
 let masterVolume = settings.UISFX.masterVolume;
 let masterV;
+let GlobalKey;
 let linkmode = false;
 let bgV;
 let DatE = new Date();
@@ -22,8 +23,30 @@ let unknownlookupstatus = false;
 let Inqueuelookupstatus = false;
 let collection;
 let piecebannervar;
+let hasBeenEncrypted;
 let content = document.getElementById('content');
 let header = document.getElementById('header');
+let unsaved = [];
+let tips = [
+    "Большинство пользователей забывают о элементах в очереди... А вы?",
+    "Lunar Lists имеют свой стандарт файлов - '.coll', хотя вы можете поставить туда вообще любое расширение.",
+    "Вы можете изменить этот проект вместе с разработчиком! Присылайте свои идеи или станьте частью команды интузиастов. (Подробнее на GitHub)",
+    "Баги, это своего рода тоже функционал... Но только вам решать, станет ли этот баг фичей или вы его зарепортите в баг-трекер.",
+    "Кастомизация этого проекта куда практичнее, чем вы думаете. Попробуйте!",
+    "Если хотите наглядно увидеть как сильно похорошел этот проект, просто откройте Lunar Lists Legacy.",
+    "Проверяйте readme на GitHub почаще - мы регулярно добавляем* туда идеи, которые вполне могут стать реальными в новых обновлениях.",
+    "AES-256 - один из самых надежных и распространенных стандартов симметричного шифрования данных, которые используют даже DHS США. Думаю, для вашей коллекции более чем безопасно.",
+    "Если галлерея грузится слишком долго, возможно стоит потрогать травы)",
+    "Возможно, вы и не подозреваете, что в вашей коллекции больше одного '67'...",
+    "Торт - это ложь.",
+    "Хотите посмотреть на плохой код? Тогда смело заходите на GitHub страничку этого проекта!",
+    "Чем больше, тем меньше",
+    "If your enemy can predict your next move, then don't move",
+    "Все бета-тестеры приложения - 200",
+    "Вы можете использовать приложение не только для аниме... ",
+    "Списки как структура данных (массивы) появились в 1950-х годах с развитием языков программировани",
+    "Исао Такахата - режиссер аниме, переживший ядерный взрыв"
+];
 // Why so many vars? CUZ JavaScript IS BS
 if(UISFXSTATE == false) {
     masterV = 0;
@@ -75,6 +98,8 @@ inputOBJforIMAGE.addEventListener('change', async (event) => {
          collection.metadata.GALLERY.push(base64String);
          refreshGallery();
          importClick.play();
+         unsaved.push(String("Добавление 1 изображения. (№ " + collection.metadata.GALLERY.length() + ")"));
+         unsavedChangesTracker();
      } catch (error) {
          console.error('Ошибка при конвертации:', error);
      }
@@ -108,7 +133,6 @@ inputOBJ.onchange = (e) => {
 
 
 function parseColl(time) {
-    hasUnsavedChanges = true;
     if(time == undefined) {
     importClick.play();
     if(collection != undefined) {
@@ -118,6 +142,10 @@ function parseColl(time) {
         collection = structure;
     }
     hideLOGO();
+    if(collection.encrypted) {
+        showDecSplash();
+        return 0;
+    } else { hasBeenEncrypted = false; }
     }
     content.innerHTML = "<br>";
     let searchBar = "<input class='filterInput' placeholder='" + settings.TextPlaceholders.FilterBarPlaceholder + "' oninput='searchForElm(this)'>";
@@ -168,6 +196,116 @@ function parseColl(time) {
     content.innerHTML = content.innerHTML + "<div id='pieceEditor'><div id='placeolderEditor'><img src='./res/ui/pieceedit.png' style='padding: 5px;'><h2>" + settings.TextPlaceholders.EditPieceTitle[0] + "</h2><p style='font-size:14px; padding:7px;'>" + settings.TextPlaceholders.EditPieceTitle[1] + "</p></div></div>";
     document.getElementById('linkmodetip').style.opacity = "100";
     hidelinkmodetip();
+}
+
+let statusDisplay = "<span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка элементов...</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка истории...</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка галлереи...</span>";
+async function tryToDecypt(btn) {
+    openEDProc();
+    let inp = document.getElementById('passToColl').value;
+    btn.style.opacity = "50%";
+    btn.innerHTML = "Подождите...";
+    try {
+        if(collection.pieces.length != 0) {
+            let i = 0;
+            statusDisplay = "<span><img src='res/ui/history.png' class='icon' style='filter: invert();'> Обработка " + collection.pieces.length + " элементов...</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка истории...</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка галлереи...</span>";
+            while(collection.pieces.length != i) {
+                console.log("[1/3] Decryption Pieces... " + i + "/" + collection.pieces.length);
+                let decp = await decryptAES(collection.pieces[i], inp);
+                collection.pieces[i] = decp;
+                document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+                i++;
+            }
+        } else { console.log("No data in Pieces array, skipping..."); }
+        if(collection.metadata.history.length != 0) {
+            let ihis = 0;
+            statusDisplay = "<span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка элементов завершена.</span><br><span><img src='res/ui/history.png' class='icon' style='filter: invert();'> Обработка истории... (" + collection.metadata.history.length + " элементов)</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка галлереи...</span>";
+            while(collection.metadata.history.length != ihis) {
+                console.log("[2/3] Decryption History... " + ihis + "/" + collection.metadata.history.length);
+                let dech = await decryptAES(collection.metadata.history[ihis], inp);
+                collection.metadata.history[ihis] = dech;
+                document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+                ihis++;
+            }
+        } else { console.log("No data in History array, skipping..."); }
+        if(collection.metadata.GALLERY.length != 0) {
+            let igal = 0;
+            statusDisplay = "<span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка элементов завершена.</span><br><span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка истории завершена.</span><br><span><img src='res/ui/history.png' class='icon' style='filter: invert();'> Обработка галлереи... (" + collection.metadata.GALLERY.length + " элементов)</span>";
+            while(collection.metadata.GALLERY.length != igal) {
+                console.log("[2/3] Decryption Gallery... " + igal + "/" + collection.metadata.GALLERY.length);
+                let decg = await decryptAES(collection.metadata.GALLERY[igal], inp);
+                collection.metadata.GALLERY[igal] = decg;
+                document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+                igal++;
+            }
+        }
+        statusDisplay = "<span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка элементов завершена.</span><br><span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка истории завершена.</span><br><span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка галлереи завершена.</span>";
+        hasBeenEncrypted = true;
+        document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+        hideDecSplash();
+        parseColl(2);
+        closeEDProc();
+        collection.encrypted = false;
+    } catch (e) {
+        closeEDProc();
+        console.error(e);
+        alert('Ошибка дешифровки коллекции. Возможно, пароль неверный?' + 'Техническая информация: ' + e);
+        btn.style.opacity = "100%";
+        btn.innerHTML = "Дешифровать коллекцию";
+    }
+}
+
+async function encryptParts(num) {
+    openEDProc();
+    let inp;
+    if(num == undefined || num == null || num == "") {
+        inp = document.getElementById("passForEnc").value;
+    }
+    else {
+        inp = GlobalKey;
+    }
+    try {
+        if(collection.pieces.length != 0) {
+            let i = 0;
+            statusDisplay = "<span><img src='res/ui/history.png' class='icon' style='filter: invert();'> Обработка " + collection.pieces.length + " элементов...</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка истории...</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка галлереи...</span>";
+            while(collection.pieces.length != i) {
+                console.log("[1/3] Encryption Pieces... " + i + "/" + collection.pieces.length);
+                let encp = await encryptAES(collection.pieces[i], inp);
+                collection.pieces[i] = encp;
+                document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+                i++;
+            }
+        } else { console.log('No data in Pieces array, skipping...'); }
+        if(collection.metadata.history.length != 0) {
+            let ihis = 0;
+            statusDisplay = "<span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка элементов завершена.</span><br><span><img src='res/ui/history.png' class='icon' style='filter: invert();'> Обработка истории... (" + collection.metadata.history.length + " элементов)</span><br><span><img src='res/ui/bookmarked.png' class='icon' style='filter: invert();'> Обработка галлереи...</span>";
+            while(collection.metadata.history.length != ihis) {
+                console.log("[2/3] Encryption History... " + ihis + "/" + collection.metadata.history.length);
+                let ench = await encryptAES(collection.metadata.history[ihis], inp);
+                collection.metadata.history[ihis] = ench;
+                document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+                ihis++;
+            }
+        } else { console.log('No data in History array, skipping...'); }
+        if(collection.metadata.GALLERY.length != 0) {
+            let igal = 0;
+            statusDisplay = "<span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка элементов завершена.</span><br><span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка истории завершена.</span><br><span><img src='res/ui/history.png' class='icon' style='filter: invert();'> Обработка галлереи... (" + collection.metadata.GALLERY.length + " элементов)</span>";
+            while(collection.metadata.GALLERY.length != igal) {
+                console.log("[3/3] Encryption Gallery... " + igal + "/" + collection.metadata.GALLERY.length);
+                let encg = await encryptAES(collection.metadata.GALLERY[igal], inp);
+                collection.metadata.GALLERY[igal] = encg;
+                document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+                igal++;
+            }
+        } else { console.log('No data in Gallery array, skipping...'); }
+        statusDisplay = "<span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка элементов завершена.</span><br><span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка истории завершена.</span><br><span><img src='res/ui/viewed.png' class='icon' style='filter: invert();'> Обработка галлереи завершена.</span>";
+        collection.encrypted = true;
+        document.getElementById("EncDecStatus").innerHTML = statusDisplay;
+        closeEDProc();
+    } catch (e) {
+        console.error(e);
+        alert("Ошибка при шифровании AES-256, попробуйте еще раз. Если она повторяется, то обратите внимание на описание ниже: " + e);
+        closeEDProc();
+    }
 }
 
 function opendetails(pieceArr, i) {
@@ -254,16 +392,22 @@ function applyChanges(arrn) {
     let elem = name + link + comment + status + date + pic;
     if(arrn == "NULL") {
         collection.pieces.push(elem);
+        unsaved.push(String("Добавление нового элемента."));
+        unsavedChangesTracker();
         console.log("Added ELEMENT");
     }
     else {
         collection.pieces[arrn] = elem;
+        unsaved.push(String("Изменение элемента №" + arrn + "."));
+        unsavedChangesTracker();
         console.log("Modded ELEMENT");
     }
     parseColl(1);
     collection.dateOfEdit = TodayDate;
 }
 function deletePiece(arrn) {
+    unsaved.push(String("Удаление элемента №" + arrn + "."));
+    unsavedChangesTracker();
     deleteCl.play();
     if(arrn == "NULL") {
         return 0;
@@ -293,7 +437,13 @@ function renderSettingsLIST() {
     let galleryoption = "<br><div style='font-size: 18px;'><img src='./res/ui/gallery.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>Галлерея коллекции: <span style='color: var(--style-col);'>" + collection.metadata.GALLERY.length + " </span>изображений. " + galdeltext + "</div>";
     let historyoption = "<div style='font-size: 18px;'><img src='./res/ui/history.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>История действий (" + collection.metadata.history.length + " записей)" + hisdeltext + "<div id='historyContent'></div></div>";
     let BTNS = "<br><br><button onclick='writeCollSettings()' class='applySettingsListBTN'>Применить настройки</button><button onclick='closeListSettings()' class='discardSettingsListBTN'>Закрыть без сохранения</button>";
-    document.getElementById("listSettContainer").innerHTML = listdetails + galleryoption + historyoption + BTNS;
+    let encrStatus;
+    if(hasBeenEncrypted) {
+        encrStatus = "<div style='font-size: 18px;'><img src='./res/ui/protection.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>Данная коллекция защищенна AES-256.</div>";
+    } else {
+        encrStatus = "<div style='font-size: 18px;'><img src='./res/ui/shield-warn.png' class='icon' style='margin-right: 3px; filter: invert(); margin-bottom: 1px;'>Данная коллекция не защищенна AES-256.</div>";
+    }
+    document.getElementById("listSettContainer").innerHTML = listdetails + galleryoption + encrStatus + historyoption + BTNS;
     renderHistory();
 }
 
@@ -316,6 +466,8 @@ function renderHistory() {
 }
 
 function eraseGALLERY() {
+    unsaved.push(String("Удаление галлереи."));
+    unsavedChangesTracker();
     deleteCl.play();
     let i = 0;
     while(collection.pieces.length != i) {
@@ -331,6 +483,8 @@ function eraseGALLERY() {
     collection.dateOfEdit = TodayDate;
 }
 function eraseHISTORY() {
+    unsaved.push(String("Удаление истории действий."));
+    unsavedChangesTracker();
     deleteCl.play();
     collection.metadata.history = [];
     renderSettingsLIST();
@@ -338,6 +492,8 @@ function eraseHISTORY() {
 }
 
 function writeCollSettings() {
+    unsaved.push(String("Изменения в настройках коллекции."));
+    unsavedChangesTracker();
     galclk.play();
     collection.name = document.getElementById('settinpLNAME').value;
     collection.author = document.getElementById('settinpLAUTH').value;
@@ -352,12 +508,48 @@ function saveColl() {
     document.getElementById('saname').value = sanitizeFilename(collection.name);
 }
 
-document.getElementById('dwn').onclick = function () {
+document.getElementById('dwn').onclick = async function () {
     var csvData = 'data:application/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(collection));
     this.href = csvData;
     this.target = '_blank';
     this.download = String(filenameX + "." + exts);
     console.log('[Task: Save list] Task finished.');
+    if(hasBeenEncrypted) {
+        alert("Сейчас будет проводится повторная дешифровка коллекции, что бы вы смогли её отредактировать после экспорта. Пожалуйста, дождитесь завершения.");
+        try {
+        if(collection.pieces.length != 0) {
+            let i = 0;
+            while(collection.pieces.length != i) {
+                console.log("[1/3] Decryption Pieces... " + i + "/" + collection.pieces.length);
+                let decp = await decryptAES(collection.pieces[i], GlobalKey);
+                collection.pieces[i] = decp;
+                i++;
+            }
+        } else { console.log("No data in Pieces array, skipping..."); }
+        if(collection.metadata.history.length != 0) {
+            let ihis = 0;
+            while(collection.metadata.history.length != ihis) {
+                console.log("[2/3] Decryption History... " + ihis + "/" + collection.metadata.history.length);
+                let dech = await decryptAES(collection.metadata.history[ihis], GlobalKey);
+                collection.metadata.history[ihis] = dech;
+                ihis++;
+            }
+        } else { console.log("No data in History array, skipping..."); }
+        if(collection.metadata.GALLERY.length != 0) {
+            let igal = 0;
+            while(collection.metadata.GALLERY.length != igal) {
+                console.log("[2/3] Decryption Gallery... " + igal + "/" + collection.metadata.GALLERY.length);
+                let decg = await decryptAES(collection.metadata.GALLERY[igal], GlobalKey);
+                collection.metadata.GALLERY[igal] = decg;
+                igal++;
+            }
+        }
+        hasBeenEncrypted = true;
+        parseColl(2);
+        showReadyTip();
+        collection.encrypted = false;
+    } catch (e) { console.error(e); }
+    }
 }
 
 
@@ -670,6 +862,8 @@ function restoreElm(hiselm, item, hisI) {
     collection.pieces.splice(restoreData[0], 0, restoreData[1]);
     item.style.display = "none";
     collection.metadata.history.splice(hisI, 1);
+    unsaved.push(String("Восстановление элемента №" + restoreData[0] + "."));
+    unsavedChangesTracker();
     parseColl(7);
     renderSettingsLIST();
 }
@@ -682,9 +876,40 @@ function sanitizeFilename(filename) {
 }
 
 let filenameX, exts;
-function SaveCollection() {
+async function SaveCollection() {
+    collection.LLReXVERSION = version;
+    unsaved.length = 0;
+    unsavedChangesTracker();
+    if(hasBeenEncrypted == false) {
+        let encinput = document.getElementById("passForEnc").value;
+        if(encinput.length != 0) {
+            try {
+            await encryptParts();
+            } catch (e) {
+                console.error("Saving process break: Encryption failed.");
+                return 0;
+            }
+        }
+    }
+    else if(hasBeenEncrypted == true) {
+        await encryptParts(1);
+    }
     filenameX = sanitizeFilename(document.getElementById('saname').value);
     exts = document.getElementById('extsel').value;
     document.getElementById('dwn').click();
     closeSaveAs();
+}
+
+function unsavedChangesTracker() {
+    let CollName = document.getElementById('headerCollName');
+    if(unsaved.length > 0) {
+        CollName.style.fontStyle = "oblique";
+        CollName.innerHTML = collection.name + shieldIco + " <img src='./res/ui/inprog.png' class='icon' style='translate: 0 -3.5px; margin-right: 2px;'>";
+        hasUnsavedChanges = true;
+    }
+    else {
+        CollName.style.fontStyle = "normal";
+        CollName.innerHTML = collection.name;
+        hasUnsavedChanges = false;
+    }
 }

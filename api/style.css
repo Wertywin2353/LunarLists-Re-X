@@ -160,8 +160,11 @@ a:visited {
 }
 
 #Headerlogo {
+    position: absolute;
     transition: 1s;
     width: 25%;
+    left: 50%;
+    translate: -50%;
 }
 
 @keyframes hidelogo {
@@ -257,7 +260,7 @@ input {
     padding: 5px;
     width: 97%;
 }
-#gallerySplash, #aboutSplash, #listSettSplash, #NewListSplash, #SaveAsSplash, #GalPreLoadSplash {
+#gallerySplash, #aboutSplash, #listSettSplash, #NewListSplash, #SaveAsSplash, #GalPreLoadSplash, #UnSavedSplash, #DecSplash, #EncryptionProcSplash {
     opacity: 0;
     transition: 0.5s;
     display: none;
@@ -276,7 +279,7 @@ input {
     opacity: 100;
     z-index: 99999;
 }
-#gallerycontent, #aboutcontainer, #listSettContainer, #newlistContainer {
+#gallerycontent, #aboutcontainer, #listSettContainer, #newlistContainer, #unsavedcontainer, #deccontainer {
     text-align: center;
     background-color: rgba(255, 255, 255, 0.4);
     width: 1000px;
@@ -447,7 +450,7 @@ summary {
 .discardSettingsListBTN:hover {
     background: red;
 }
-#linkmodetip, #importTip, #exportTip {
+#linkmodetip, #importTip, #exportTip, #readyTip {
     z-index: 1999;
     transition: 1s;
     opacity: 0;
@@ -596,4 +599,65 @@ select {
 }
 #filtadd:hover {
     background-color: rgba(255, 255, 255, 0.5);
+}
+#uscplhldr {
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    margin-top: 5px;
+}
+
+.backToEditBTN {
+    background: var(--style-col);
+    font-family: var(--font-Fam);
+}
+.backToEditBTN:hover {
+    filter: invert();
+}
+#tips {
+    user-select: none;
+    transition: 0.3s;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(15px);
+    padding: 5px;
+    text-align: center;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    translate: -50%;
+    color: black;
+    font-family: var(--font-Fam);
+    width: 80%;
+}
+#tips:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+#updState {
+    float: right;
+    width: 3%;
+    margin-top: 3px;
+    margin-right: 28px;
+    margin-bottom: 5px;
+}
+
+#deccontainer {
+    text-align: left;
+}
+#passToColl, #passForEnc {
+    text-align: center;
+    float: none;
+    border-radius: 7px;
+    font-family: var(--font-Fam);
+    font-size: 20px;
+    width: 99%;
+    display: block;
+    margin: 0 auto;
+}
+
+#EncryptionProcSplash {
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(35px);
+    z-index: 999999;
 }
